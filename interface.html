@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite-Craft copy</title>
+    <style>
+        .selected {
+            background-color: lightblue;
+        }
+        body {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/A_black_background.jpg/640px-A_black_background.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        button {
+            padding: 17px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            border: 0;
+            background-color: white;
+            box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 15px;
+            transition: all 0.5s ease;
+        }
+
+        button:hover {
+            letter-spacing: 3px;
+            background-color: hsl(261deg 80% 48%);
+            color: hsl(0, 0%, 100%);
+            box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+        }
+
+        button:active {
+            letter-spacing: 3px;
+            background-color: hsl(261deg 80% 48%);
+            color: hsl(0, 0%, 100%);
+            box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+            transform: translateY(10px);
+            transition: 100ms;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>Balasel</h2>
+    <button onclick="toggleSelection(this)">Tree</button>
+    <button onclick="toggleSelection(this)">Water</button>
+
+    <script>
+        let selectedButtons = [];
+        let buttonCounter = 4;
+
+        function toggleSelection(button) {
+            if (selectedButtons.includes(button)) {
+                selectedButtons = selectedButtons.filter(btn => btn !== button);
+                button.classList.remove('selected');
+            } else {
+                if (selectedButtons.length < 2) {
+                    selectedButtons.push(button);
+                    button.classList.add('selected');
+                    if (selectedButtons.length === 2) {
+                        triggerEvent();
+                    }
+                } else {
+                    const firstButton = selectedButtons.shift();
+                    firstButton.classList.remove('selected');
+                    selectedButtons.push(button);
+                    button.classList.add('selected');
+                }
+            }
+        }
+
+        function triggerEvent() {
+            const buttonNames = selectedButtons.map(button => button.textContent);
+
+            if (buttonNames.includes('Tree') && buttonNames.includes('Water')) {
+                spawnButton('Earth');
+            } else if (buttonNames.includes('Earth') && buttonNames.includes('Water')) {
+                spawnButton('Life');
+            }
+
+            // Unselect
+            selectedButtons.forEach(button => {
+                button.classList.remove('selected');
+            });
+            selectedButtons = [];
+        }
+
+        function spawnButton(buttonName) {
+            const existingButtons = document.querySelectorAll('button');
+            let buttonExists = false;
+            existingButtons.forEach(button => {
+                if (button.textContent === buttonName.charAt(0).toUpperCase() + buttonName.slice(1)) {
+                    buttonExists = true;
+                }
+            });
+
+            if (!buttonExists) {
+                buttonCounter++;
+                const newButton = document.createElement('button');
+                newButton.textContent = buttonName.charAt(0).toUpperCase() + buttonName.slice(1);
+                newButton.onclick = function () { toggleSelection(this); };
+                document.body.appendChild(newButton);
+            }
+        }
+    </script>
+</body>
+</html>
